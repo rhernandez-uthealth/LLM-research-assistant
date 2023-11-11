@@ -1,6 +1,3 @@
-import os
-import torch
-import pinecone
 from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings.openai import OpenAIEmbeddings
@@ -67,11 +64,11 @@ def main():
             parse_llm_response(llm_response)
 
     if page == "CreateDB":
-        dirname = st.text_input("Enter the name for sub-folder housing the ChromaDB you would like to create.", '', key=1)
+        dirname = st.text_input("Enter the name for sub-folder to house the ChromaDB you would like to create.", '', key=1)
         DIRECTORY = "./databases/{}/".format(dirname)
-        LIBRARY = st.text_input("What is the name of the Zotero BetterBibtex library folder in this directory you would like to use for this database?", key=5)
+        LIBRARY = st.text_input("What is the name of the Zotero BetterBibtex library folder you would like to use for this database?", key=5)
         st.button("Waiting", type="primary")
-        if st.button('Yes'):
+        if st.button('CreateDB'):
             process.main(LIBRARY, DIRECTORY, OPENAI_API_KEY)
 
 
