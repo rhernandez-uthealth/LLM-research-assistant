@@ -46,7 +46,7 @@ streamlit run app.py
 ```
 A webpage should open automatically. In the "CreateDB" page, enter the name of the exported Zotero collection and the name of the database you would like to create. Click "CreateDB" to create the database:
 Create the database:
-![](/images/CreateDB.png)
+![](/images/CreateDB_interface.png)
 Load the database and query the articles:
 ![](/images/QAInterface.png)
 
