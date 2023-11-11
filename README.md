@@ -13,7 +13,7 @@
 
 # Install:
 
-<!-- start:code block -->
+```bash
 # Create Python 3.10 environment
 conda create -n LLM-research-helper python=3.10
 activate LLM-research-helper
@@ -26,5 +26,5 @@ cd papermark
 pip install -r requirements.txt
 pip install spacy
 pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-1.2.0/en_core_web_sm-1.2.0.tar.gz
+```
 
-<!-- end:code block -->
