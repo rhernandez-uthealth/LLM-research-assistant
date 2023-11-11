@@ -4,7 +4,27 @@
  This application reads a Zotero collection exported using BetterBibtex to create a ChromaDB database which may be queried to retrieve text-similar-matches, interpreted and communicated using OpenAI ChatGPT-3.5-turbo generative ai Large Language Model (llm)
 
 # Prerequisites:
+ Anaconda - https://www.anaconda.com/download/
+ 
  Zotero - https://www.zotero.org
  
  Zotero add-on, BetterBibtex - https://github.com/retorquere/zotero-better-bibtex/releases
 
+
+# Install:
+
+<!-- start:code block -->
+# Create Python 3.10 environment
+conda create -n LLM-research-helper python=3.10
+activate LLM-research-helper
+
+# Clone this repository
+git clone https://github.com/rhernandez-uthealth/LLM-research-assistant.git
+cd papermark
+
+# Install dependencies
+pip install -r requirements.txt
+pip install spacy
+pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-1.2.0/en_core_web_sm-1.2.0.tar.gz
+
+<!-- end:code block -->
