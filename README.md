@@ -33,6 +33,7 @@ Install dependencies
 pip install -r requirements.txt
 pip install spacy
 python -m spacy download en
+pip install --no-cache-dir --force-reinstall git+https://github.com/sciunto-org/python-bibtexparser@main
 
 ```
 
