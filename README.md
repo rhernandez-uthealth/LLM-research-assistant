@@ -10,15 +10,9 @@
  
  Zotero - https://www.zotero.org
  
- Zotero add-on, BetterBibtex - https://github.com/retorquere/zotero-better-bibtex/releases
- 
-   Note that the parent items in Zotero must have the correct metadata. If you've tried uploading a PDF to your Zotero collection, right click the file in Zotero, click "Create parent item...", and copy and paste the DOI at the top of the article in the pop-up 
+ Zotero add-on, BetterBibtex - https://github.com/retorquere/zotero-better-bibtex/releases  (Note that the parent items in Zotero must have the correct metadata. If you've tried uploading a PDF to your Zotero collection, right click the file in Zotero, click "Create parent item...", and copy and paste the DOI at the top of the article in the pop-up)
 
-
- OpenAI API-key - https://platform.openai.com/api-keys
- 
-   Note that you must have a paid OpenAI account and use their API key
-
+ OpenAI API-key - https://platform.openai.com/api-keys  (Note that you must have a paid OpenAI account and use their API key)
 
 # Install:
 Copy your OpenAI API key from  https://platform.openai.com/api-keys, open "keys.txt" and paste your key between the quotations
