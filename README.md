@@ -32,5 +32,5 @@ pip install https://github.com/explosion/spacy-models/releases/download/en_core_
 
 # Usage:
 Export your Zotero collection to the ./zotero_libraries/ folder
-[](./images/ExportCollection.png)
+![](/images/ExportCollection.png)
 
