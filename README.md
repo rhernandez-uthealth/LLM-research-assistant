@@ -26,7 +26,7 @@ Clone this repository
 ```bash
 # Clone this repository
 git clone https://github.com/rhernandez-uthealth/LLM-research-assistant.git
-cd papermark
+cd LLM-research-assistant
 ```
 Install dependencies
 ```bash
