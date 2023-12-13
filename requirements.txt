@@ -1,10 +1,9 @@
-
 numpy
 langchain
-streamlit
 stqdm
 bibtexparser
 chromadb
 pypdf
 openai
---no-cache-dir --force-reinstall git+https://github.com/sciunto-org/python-bibtexparser@main
+tiktoken
+sentence-transformers
