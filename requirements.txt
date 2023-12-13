@@ -3,7 +3,6 @@ numpy
 langchain
 streamlit
 stqdm
-bibtexparser
 chromadb
 pypdf
 openai
