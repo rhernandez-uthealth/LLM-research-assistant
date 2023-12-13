@@ -3,8 +3,12 @@ import os
 import re
 
 def getvalue(value):
-    findit = re.findall("`(.*?)`", str(value))
-    return findit[1]
+    try:
+        findit = re.findall("`(.*?)`", str(value))
+        found = findit[1]
+    except:
+        found = ""
+    return found
 
 def zot_bibparser(dir):
     outdict=[]
@@ -12,12 +16,12 @@ def zot_bibparser(dir):
     zotbib = './zotero_libraries/{}/{}.bib'.format(dir, dir)
     library = bibtexparser.parse_file(zotbib)
     for i in range(0, len(os.listdir(dirpath+"/files/"))):
-        entry = library.entries[i].fields_dict
-        # print(entry.keys())
+        print(i)
+        entry= library.entries[i].fields_dict
         tempdict = {
-            'author':re.sub('[^0-9a-zA-Z]+', ', ', getvalue(entry['author'])),
-            'year':getvalue(entry['year']),
-            'file_path':dirpath+getvalue(entry['file'])
+            'author':re.sub('[^0-9a-zA-Z]+', ', ', getvalue(entry.get('author', 'missing'))),
+            'year':getvalue(entry.get('year',"")),
+            'file_path':dirpath+getvalue(entry.get('file','missing'))
         }
         try:
             tempdict['citation']="{}, {}".format(tempdict['author'].split(',')[0], tempdict['year'])
