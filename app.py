@@ -2,6 +2,8 @@ from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains import RetrievalQA
+from langchain.retrievers.multi_query import MultiQueryRetriever
+
 import streamlit as st
 import re
 import process
@@ -17,13 +19,13 @@ def get_vectorstor(directory, openai_api_key):
     return vectordb
 
 def get_retriver(vectorstor):   
-    retriever = vectorstor.as_retriever(search_kwargs={"k": 10})
+    retriever = vectorstor.as_retriever(search_kwargs={"k": 20})
     return retriever
 
 def get_qachain(openai_api_key, retriever):
     qa_chain = RetrievalQA.from_chain_type(
         llm=ChatOpenAI(
-            model_name="gpt-3.5-turbo", temperature=0, openai_api_key=openai_api_key
+            model_name="gpt-3.5-turbo", temperature=0.3, openai_api_key=openai_api_key
             ),
         chain_type="stuff", 
         retriever=retriever, 
@@ -52,10 +54,15 @@ def main():
         query = st.text_input("Ask questions about your PDF file:", key=3)
         if query:
             vectordb = Chroma(persist_directory=DIRECTORY, embedding_function=OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY, model="text-embedding-ada-002"))
-            retriever = vectordb.as_retriever(search_kwargs={"k": 10})
+            retriever = vectordb.as_retriever(search_type="mmr", search_kwargs={"k": 10})
+            MultiQueryRetriever.from_llm(
+                retriever=vectordb.as_retriever(), 
+                llm=ChatOpenAI(model_name="gpt-3.5-turbo", temperature=.1, openai_api_key=OPENAI_API_KEY)
+            )
+
             qa_chain = RetrievalQA.from_chain_type(
                 llm=ChatOpenAI(
-                    model_name="gpt-3.5-turbo", temperature=0, openai_api_key=OPENAI_API_KEY
+                    model_name="gpt-3.5-turbo", temperature=.1, openai_api_key=OPENAI_API_KEY
                     ),
                 chain_type="stuff", 
                 retriever=retriever, 
