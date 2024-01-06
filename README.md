@@ -3,6 +3,8 @@
 
  This application reads a Zotero collection of academic articles exported using BetterBibtex to create a ChromaDB database which may be queried to retrieve text-similar-matches. Each article is seperated into 1000 character "chunks" and parsed using natural language processing using the python Spacy library to remove content other than the article's main text. Each query retrieves the 10 most closely-matched chunks and interprets the retrieval using OpenAI ChatGPT-3.5-turbo generative-ai Large Language Model (llm).
 
+ A default query asks the model to generate responsest that are suitable for academic work and that include in-text citations.  
+
  
 
 # Prerequisites:
@@ -19,8 +21,8 @@ Copy your OpenAI API key from  https://platform.openai.com/api-keys, open "keys.
 
 Create Python 3.10 environment
 ```bash
-conda create -n LLM-research-helper python=3.10
-conda activate LLM-research-helper
+conda create -n LLM-helper python=3.10
+conda activate LLM-helper
 ```
 Clone this repository
 ```bash
@@ -60,8 +62,16 @@ Create the database:
 
  ![](/images/CreateDB_interface.png)
  
-Load the database and query the articles:
+Load the database and query the articles. 
 
  ![](/images/QAInterface.png)
+
+If any of the retrieved sections of text are irrelevant and should be excluded from the database, enter their ID's into the field "Write IDs of entries you wish to delete" amd click "Delete and re-query." Those entries will be removed from the database and and the query will run again to generate a new response. 
+
+ ![](/images/idfordel.png)
+
+ ![](/images/del_input.png)
+
+
 
 

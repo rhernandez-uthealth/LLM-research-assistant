@@ -24,10 +24,10 @@ def zot_bibparser(dir):
             'file_path':dirpath+getvalue(entry.get('file','missing'))
         }
         try:
-            tempdict['citation']="{}, {}".format(tempdict['author'].split(',')[0], tempdict['year'])
+            tempdict['source']="{}, {}".format(tempdict['author'].split(',')[0], tempdict['year'])
             tempdict['abstract']=getvalue(entry['abstract'])
         except:
-            tempdict['citation']="{}, {}".format(tempdict['author'].split(',')[0], tempdict['year'])
+            tempdict['source']="{}, {}".format(tempdict['author'].split(',')[0], tempdict['year'])
             tempdict['abstract']='not found'
            
         outdict.append(tempdict)

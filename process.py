@@ -27,15 +27,16 @@ def readPDF(filename):
 
 def format_chunks(chunklist):
     chunks=chunklist
-    print(len(chunks))
     for i in range(1, len(chunks)):
         if chunks[i-1].endswith('.') is False:
             first = chunks[i].split('. ')[0]
             chunks[i]=chunks[i].replace(first, '').lstrip('. ')
             chunks[i-1]=chunks[i-1]+first+'.'
     return chunks
-# Splitter function which splits text from articles to 1000-character chunks, with 200 overlapping
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=600)
+
+
+# text_splitter = RecursiveCharacterTextSplitter(chunk_size=600)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=700)
 
 # Functions for reducing chunks containing irrelevant information using Spacy natural language processing
 # /// English-language nlp model to categorize textual content
@@ -64,6 +65,8 @@ def delete_multiple_element(list_object, indices):
             list_object.pop(idx)
 
 
+    
+    
 def main(project_name, DIRECTORY, OPENAI_API_KEY):
     print("Enter the name of the Zotero library export (using Better-Bibtext)")
     bibdata = bibparse.main(project_name)
@@ -74,28 +77,50 @@ def main(project_name, DIRECTORY, OPENAI_API_KEY):
     allmeta = []
     for i in stqdm(range(0, len(bibdata))):
         meta = bibdata[i]
+        print(meta['source'], meta['file_path'])
         metadata=[]
+        ids=[]
         filepath = './zotero_libraries/{}'
         text = readPDF(meta['file_path'])
-        text = re.split(r'(?i)abstract', text)[-1]
+        text_re = ''.join(re.split(r'Abstract', text, flags=re.IGNORECASE)[1:])
+        text_re = ''.join(re.split(r'References', text_re, flags=re.IGNORECASE)[:-1])
+        if len(str(text_re))>5000:
+            text=text_re
         chunks = text_splitter.split_text(text)
-        reduced_chunks = ent_cutoff(chunks)
-        
-        omissions = []
-        for index, value in enumerate(chunks):
-            if value not in reduced_chunks:
-                omissions.append(index)
-        delete_multiple_element(chunks, omissions)
-        delete_multiple_element(metadata, omissions)
         chunks=format_chunks(chunks)
+        print(len(text), len(chunks))
+        # reduced_chunks = ent_cutoff(chunks)
+        # print("orig chunks:"+str(len(chunks)))
+        # omissions = []
         for n, chunk in enumerate(chunks):
             meta['text']=chunks[n]
-            meta['id'] = "ID-{}-{}".format(str(i),str(n))
+            idnum="ID-{}-{}".format(str(i),str(n))
+            meta['id'] = idnum
+            ids.append(idnum)
             metadata.append(dict(meta)) 
+        # omissions = []
+        # for index, value in enumerate(chunks):
+        #     if value not in reduced_chunks:
+        #         omissions.append(index)
+        # delete_multiple_element(chunks, omissions)
+        # delete_multiple_element(metadata, omissions)
+        # delete_multiple_element(ids, omissions)
+
+        # print("reduced chunks:"+str(len(chunks)))
+        # allmeta.append(metadata)
+        # allchunks.append(chunks)
+        # for index, value in enumerate(chunks):
+        #     if value not in reduced_chunks:
+        #         omissions.append(index)
+        # delete_multiple_element(chunks, omissions)
+        # delete_multiple_element(metadata, omissions)
+        # chunks=format_chunks(chunks)
+
         vector_index = Chroma.from_texts(
             texts=chunks,
             embedding=embeddings, 
             persist_directory=DIRECTORY, 
-            metadatas=metadata
+            metadatas=metadata,
+            ids=ids
             )
     print("Database created from {} at {}".format(len(bibdata), DIRECTORY))
