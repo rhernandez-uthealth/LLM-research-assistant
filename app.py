@@ -38,8 +38,8 @@ def parse_llm_response(llm_response):
 
 
 def query_func(query_input, vectordb):
-    
-    query_text = 'Answer the question posed by the query in paragraph form. The content of the answer should be fitting for academic publication. Use in-text citations. Make your response over 500 words. "Query:"{}"'.format(query_input)    
+    # Default query is set below
+    query_text = 'Carefully interpret the context and generate a response to the query. The language should be suitable for an academic journal, concise, and thoughtful. Use in-text citations. Your response should be around 400 words. "Query:"{}"'.format(query_input)    
     retriever = vectordb.as_retriever(
         search_type="mmr", 
         search_kwargs={
@@ -52,7 +52,7 @@ def query_func(query_input, vectordb):
         )
     qa_chain = RetrievalQAWithSourcesChain.from_chain_type(
         llm=ChatOpenAI(
-            model_name="gpt-4", temperature=0.1, openai_api_key=OPENAI_API_KEY
+            model_name="gpt-4", temperature=0.3, openai_api_key=OPENAI_API_KEY
         ),
         chain_type="stuff", 
         retriever=mqr, 
@@ -62,38 +62,34 @@ def query_func(query_input, vectordb):
     idlist = parse_llm_response(llm_response)
     return idlist
 
-# def filter_func(query_input, vectordb, idlist):
-#     # afilter = {"id":{"$nin":idlist}}
-#     # verctordb = vectordb.get(where=afilter)
-#     query_text = 'Respond to the query by retrieving the relevant texts from the context. Use in-text citations. Use every source in your answer, if possible. Only use information retrieved from the provided context when generating your response. Do not elaborate about the concepts mentioned in the query. Make your response over 700 wordsQuery:"{}"'.format(query_input)
-
-#     filter_list = []
-#     for item in idlist:
-#         filter_list.append({"id":{"$eq":str(item)}})
-#     afilter = {"$or":filter_list}
-        
-#     retriever = vectordb.as_retriever(
-#         search_type="similarity", 
-#         search_kwargs={
-#             "k": 5,
-#             "filter":afilter
-#         }
-#         )
-
-#     qa_chain = RetrievalQAWithSourcesChain.from_chain_type(
-#         llm=ChatOpenAI(
-#             model_name="gpt-3.5-turbo", 
-#             temperature=0.1, 
-#             openai_api_key=OPENAI_API_KEY
-#         ),
-#         chain_type="stuff", 
-#         retriever=retriever, 
-#         return_source_documents=True
-#         )
-    
+def query_reroll(query_input, vectordb, idlist2, sources):
+    # Default query is set below
+    query_text = 'The content of the answer should be fitting for academic publication. Use in-text citations. Make your response over 400 words. "Query:"{}"'.format(query_input)    
+    retriever = vectordb.as_retriever(
+        search_type="mmr", 
+        search_kwargs={
+            "k": 15,
+            "filter":{
+                'id':{'$nin':idlist2},
+                'source':{'$nin':sources}}
+        }
+    )
+    mqr = MultiQueryRetriever.from_llm(
+            retriever=retriever, 
+            llm=ChatOpenAI(model_name="gpt-4", temperature=0.3, openai_api_key=OPENAI_API_KEY)
+        )
+    qa_chain = RetrievalQAWithSourcesChain.from_chain_type(
+        llm=ChatOpenAI(
+            model_name="gpt-4", temperature=0.3, openai_api_key=OPENAI_API_KEY
+        ),
+        chain_type="stuff", 
+        retriever=mqr, 
+        return_source_documents=True
+        )
     llm_response = qa_chain(str(query_text))
-    parse_llm_response(llm_response)
-    return llm_response
+    idlist = parse_llm_response(llm_response)
+    return idlist
+
 
 def del_index(del_input, vectordb):
     if ',' in str(del_input):
@@ -112,6 +108,9 @@ def main():
         
         query_input = st.text_input("Ask questions about your PDF file:", key=3)
         query = st.button("Query")
+        reroll = st.button("Reroll")
+        sources = st.text_input("Write the sources you wish to exclude")
+
         del_input=''
         del_input = st.text_input("Write the IDs of entries you wish to delete, seperated by a comma")
         del_requery = st.button("Delete by ID")
@@ -122,7 +121,9 @@ def main():
         if query or query_input:
             idlist = query_func(query_input, vectordb)
             print(idlist)
-        
+        if reroll:
+            idlist = query_reroll(query_input, vectordb, idlist, sources)
+            print(idlist)
         if del_requery:
             print("del input:"+del_input)
             del_index(del_input, vectordb)
