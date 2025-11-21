@@ -6,3 +6,8 @@ pypdf
 openai
 tiktoken
 sentence-transformers
+langchain-classic
+langchain-openai
+langchain-chroma
+spacy
+bibparse
