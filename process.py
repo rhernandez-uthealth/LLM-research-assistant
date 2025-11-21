@@ -4,14 +4,18 @@ from chromadb.config import Settings
 import spacy
 import bibparse
 from pypdf import PdfReader
-from langchain.vectorstores import Chroma
-from langchain.embeddings.openai import OpenAIEmbeddings
+# from langchain.vectorstores import Chroma
+from langchain_chroma import Chroma
+from langchain_openai import ChatOpenAI
+# from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain_openai.embeddings import OpenAIEmbeddings
+
 from chromadb.utils import embedding_functions
  
 
  
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from stqdm import stqdm
 # Retrieve OpenAI api-key from text file
 import re
